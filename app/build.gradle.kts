@@ -2,6 +2,8 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.hilt)
+    kotlin("kapt")
 }
 
 android {
@@ -49,11 +51,37 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
-    testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+    // Testing
+    testImplementation(libs.junit)
+    testImplementation(libs.turbine) // 測試 Flow
+    testImplementation(libs.kotlinx.coroutines.test)
+
+    // Compose
+    implementation(libs.material3)
+    implementation(libs.androidx.constraintlayout.compose)
+
+    // ViewModel
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+
+    // Hilt
+    implementation(libs.hilt.android)
+    kapt(libs.hilt.android.compiler)
+
+    // Retrofit + Moshi
+    implementation(libs.retrofit)
+    implementation(libs.converter.moshi)
+    implementation(libs.moshi.kotlin)
+
+    // Coroutine
+    implementation(libs.kotlinx.coroutines.android)
+
+    // Coil
+    implementation(libs.coil.compose)
 }
