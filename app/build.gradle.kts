@@ -67,11 +67,13 @@ dependencies {
     implementation(libs.material3)
     implementation(libs.androidx.constraintlayout.compose)
 
-    // ViewModel
+    // ViewModel + Navigation
     implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(libs.androidx.navigation.compose)
 
     // Hilt
     implementation(libs.hilt.android)
+    implementation(libs.androidx.hilt.navigation.compose)
     kapt(libs.hilt.android.compiler)
 
     // Retrofit + Moshi
