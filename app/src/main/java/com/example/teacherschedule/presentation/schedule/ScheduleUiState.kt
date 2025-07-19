@@ -48,6 +48,11 @@ sealed class ScheduleUiState {
          */
         val isPrevEnabled = currentRangeStartDate > LocalDate.now()
 
+        /**
+         * 此週內所有時段所對應的日期。
+         */
+        val dateList = timeSlotList.map { it.startUtc.toLocalDate() }
+
         private fun LocalDate.formatToWeekRangeText(): String {
             val end = this.plusDays(6)
             val formatter = DateTimeFormatter.ofPattern("MMM d", Locale.getDefault())
