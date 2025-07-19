@@ -2,8 +2,9 @@ package com.example.teacherschedule.presentation.schedule
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -11,12 +12,14 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.painterResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.teacherschedule.R
@@ -33,6 +36,7 @@ fun ScheduleScreen(
 ) {
     val viewModel: ScheduleViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsState()
+    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
 
     LaunchedEffect(Unit) {
         viewModel.init(teacherId)
@@ -42,6 +46,7 @@ fun ScheduleScreen(
         topBar = {
             TopAppBar(
                 title = { Text("預約老師") },
+                scrollBehavior = scrollBehavior,
                 navigationIcon = {
                     IconButton(onClick = onBackClick) {
                         Icon(
@@ -65,30 +70,42 @@ fun ScheduleScreen(
 
                 is ScheduleUiState.Success -> {
                     val successState = (uiState as? ScheduleUiState.Success) ?: return@Box
-                    Column {
-                        TeacherInfoCard(name = teacherId)
-                        WeekSelectorBar(
-                            rangeText = successState.rangeText,
-                            isPrevEnabled = successState.isPrevEnabled,
-                            onPrev = { viewModel.loadPreviousWeek() },
-                            onNext = { viewModel.loadNextWeek() }
-                        )
-                        DayOfWeekTab(
-                            dateList = successState.dateList,
-                            selectedDate = successState.selectedDate,
-                            onDateSelected = { date ->
-                                viewModel.updateSlotsByDate(date)
-                            }
-                        )
-                        AnimatedContent(
-                            targetState = successState.timeSlotList,
-                            label = "TimeSlotListTransition"
-                        ) { slotList ->
-                            TimeSlotList(
-                                slots = slotList,
-                                selectedSlot = successState.selectedTime,
-                                onSelect = { viewModel.selectTimeSlot(it) }
+                    LazyColumn(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .nestedScroll(scrollBehavior.nestedScrollConnection)
+                    ) {
+                        item {
+                            TeacherInfoCard(name = teacherId)
+                        }
+                        item {
+                            WeekSelectorBar(
+                                rangeText = successState.rangeText,
+                                isPrevEnabled = successState.isPrevEnabled,
+                                onPrev = { viewModel.loadPreviousWeek() },
+                                onNext = { viewModel.loadNextWeek() }
                             )
+                        }
+                        item {
+                            DayOfWeekTab(
+                                dateList = successState.dateList,
+                                selectedDate = successState.selectedDate,
+                                onDateSelected = { date ->
+                                    viewModel.updateSlotsByDate(date)
+                                }
+                            )
+                        }
+                        item {
+                            AnimatedContent(
+                                targetState = successState.timeSlotList,
+                                label = "TimeSlotListTransition"
+                            ) { slotList ->
+                                TimeSlotList(
+                                    slots = slotList,
+                                    selectedSlot = successState.selectedTime,
+                                    onSelect = { viewModel.selectTimeSlot(it) }
+                                )
+                            }
                         }
                     }
                 }
