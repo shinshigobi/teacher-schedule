@@ -18,7 +18,9 @@ class ScheduleViewModel @Inject constructor(
     private val getTimeSlotUseCase: GetTimeSlotUseCase
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow<ScheduleUiState>(ScheduleUiState.Loading)
+    private val _uiState = MutableStateFlow<ScheduleUiState>(
+        ScheduleUiState.Loading(lastState = null)
+    )
     val uiState = _uiState.asStateFlow()
 
     private var teacherId = ""
@@ -65,7 +67,8 @@ class ScheduleViewModel @Inject constructor(
     }
 
     private fun loadSchedule(rangeStartDate: LocalDate, selectedDate: LocalDate) {
-        _uiState.value = ScheduleUiState.Loading
+        val previous = _uiState.value as? ScheduleUiState.Success
+        _uiState.value = ScheduleUiState.Loading(lastState = previous)
 
         viewModelScope.launch {
             val result = getTimeSlotUseCase.invoke(teacherId, rangeStartDate.toString())

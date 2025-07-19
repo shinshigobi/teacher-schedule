@@ -60,50 +60,63 @@ fun ScheduleScreen(
     ) { innerPadding ->
         Box(modifier = Modifier.padding(innerPadding)) {
             when (uiState) {
-                is ScheduleUiState.Loading -> {
-                    CircularProgressIndicator(Modifier.align(Alignment.Center))
-                }
-
                 is ScheduleUiState.Error -> {
                     // TODO
                 }
 
-                is ScheduleUiState.Success -> {
-                    val successState = (uiState as? ScheduleUiState.Success) ?: return@Box
-                    LazyColumn(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .nestedScroll(scrollBehavior.nestedScrollConnection)
+                is ScheduleUiState.Success, is ScheduleUiState.Loading -> {
+                    val successState = when (val state = uiState) {
+                        is ScheduleUiState.Success -> state
+                        is ScheduleUiState.Loading -> state.lastState
+                        else -> null
+                    }
+                    Box(
+                        modifier = Modifier.fillMaxSize()
                     ) {
-                        item {
-                            TeacherInfoCard(name = teacherId)
-                        }
-                        item {
-                            WeekSelectorBar(
-                                rangeText = successState.rangeText,
-                                isPrevEnabled = successState.isPrevEnabled,
-                                onPrev = { viewModel.loadPreviousWeek() },
-                                onNext = { viewModel.loadNextWeek() }
-                            )
-                        }
-                        item {
-                            DayOfWeekTab(
-                                dateList = successState.dateList,
-                                selectedDate = successState.selectedDate,
-                                onDateSelected = { date ->
-                                    viewModel.updateSlotsByDate(date)
+                        if (successState != null) {
+                            LazyColumn(
+                                modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
+                            ) {
+                                item {
+                                    TeacherInfoCard(name = teacherId)
                                 }
-                            )
+                                item {
+                                    WeekSelectorBar(
+                                        rangeText = successState.rangeText,
+                                        isPrevEnabled = successState.isPrevEnabled,
+                                        onPrev = { viewModel.loadPreviousWeek() },
+                                        onNext = { viewModel.loadNextWeek() }
+                                    )
+                                }
+                                item {
+                                    DayOfWeekTab(
+                                        dateList = successState.dateList,
+                                        selectedDate = successState.selectedDate,
+                                        onDateSelected = { date ->
+                                            viewModel.updateSlotsByDate(date)
+                                        }
+                                    )
+                                }
+                                item {
+                                    AnimatedContent(
+                                        targetState = successState.timeSlotList,
+                                        label = "TimeSlotListTransition"
+                                    ) { slotList ->
+                                        TimeSlotList(
+                                            slots = slotList,
+                                            selectedSlot = successState.selectedTime,
+                                            onSelect = { viewModel.selectTimeSlot(it) }
+                                        )
+                                    }
+                                }
+                            }
                         }
-                        item {
-                            AnimatedContent(
-                                targetState = successState.timeSlotList,
-                                label = "TimeSlotListTransition"
-                            ) { slotList ->
-                                TimeSlotList(
-                                    slots = slotList,
-                                    selectedSlot = successState.selectedTime,
-                                    onSelect = { viewModel.selectTimeSlot(it) }
+                        if (uiState is ScheduleUiState.Loading) {
+                            Box(
+                                modifier = Modifier.fillMaxSize()
+                            ) {
+                                CircularProgressIndicator(
+                                    modifier = Modifier.align(Alignment.Center)
                                 )
                             }
                         }

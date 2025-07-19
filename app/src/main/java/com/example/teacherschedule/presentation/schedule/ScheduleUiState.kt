@@ -8,7 +8,7 @@ import java.util.Locale
 
 sealed class ScheduleUiState {
 
-    data object Loading : ScheduleUiState()
+    data class Loading(val lastState: Success?) : ScheduleUiState()
 
     /**
      * 表示行事曆載入成功時的狀態。
