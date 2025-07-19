@@ -3,6 +3,7 @@ package com.example.teacherschedule.presentation.schedule
 import com.example.teacherschedule.domain.exception.AppException
 import com.example.teacherschedule.domain.model.schedule.TimeSlot
 import java.time.LocalDate
+import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
 sealed class ScheduleUiState {
@@ -33,7 +34,7 @@ sealed class ScheduleUiState {
      * @property isBookingConfirmed 是否進行預約，用來顯示 Dialog。
      */
     data class Success(
-        val currentRangeStartDate: LocalDate,
+        val currentRangeStartDate: ZonedDateTime,
         val timeSlotList: List<TimeSlot>,
         val dateList: List<LocalDate>,
         val selectedDate: LocalDate,

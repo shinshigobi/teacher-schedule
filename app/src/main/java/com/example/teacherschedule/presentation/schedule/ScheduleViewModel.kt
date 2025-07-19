@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.ZoneId
+import java.time.ZonedDateTime
 import javax.inject.Inject
 
 @HiltViewModel
@@ -26,10 +27,10 @@ class ScheduleViewModel @Inject constructor(
     private var teacherId = ""
     private var allTimeSlotMap: Map<LocalDate, List<TimeSlot>> = emptyMap()
 
-    fun init(teacherId: String, defaultDate: LocalDate = LocalDate.now()) {
+    fun init(teacherId: String, defaultDate: ZonedDateTime = ZonedDateTime.now()) {
         if (this.teacherId.isNotBlank()) return
         this.teacherId = teacherId
-        loadSchedule(defaultDate, defaultDate)
+        loadSchedule(defaultDate, defaultDate.toLocalDate())
     }
 
     fun updateSlotsByDate(date: LocalDate) {
@@ -49,13 +50,13 @@ class ScheduleViewModel @Inject constructor(
         if (!canLoadPrevWeek(currentState.currentRangeStartDate)) return
 
         val prevWeekStart = currentState.currentRangeStartDate.minusWeeks(1)
-        loadSchedule(prevWeekStart, prevWeekStart)
+        loadSchedule(prevWeekStart, prevWeekStart.toLocalDate())
     }
 
     fun loadNextWeek() {
         val currentState = _uiState.value as? ScheduleUiState.Success ?: return
         val nextWeekStart = currentState.currentRangeStartDate.plusWeeks(1)
-        loadSchedule(nextWeekStart, nextWeekStart)
+        loadSchedule(nextWeekStart, nextWeekStart.toLocalDate())
     }
 
     fun selectTimeSlot(timeSlot: TimeSlot) {
@@ -73,12 +74,12 @@ class ScheduleViewModel @Inject constructor(
                 uiState.selectedDate
             )
         } ?: run {
-            val defaultDate = LocalDate.now()
-            loadSchedule(defaultDate, defaultDate)
+            val defaultDate = ZonedDateTime.now()
+            loadSchedule(defaultDate, defaultDate.toLocalDate())
         }
     }
 
-    private fun loadSchedule(rangeStartDate: LocalDate, selectedDate: LocalDate) {
+    private fun loadSchedule(rangeStartDate: ZonedDateTime, selectedDate: LocalDate) {
         val previous = _uiState.value as? ScheduleUiState.Success
         _uiState.value = ScheduleUiState.Loading(lastState = previous)
 
@@ -116,9 +117,9 @@ class ScheduleViewModel @Inject constructor(
      * @param date 整週的開始日期。
      * @return 是否可往前載入。
      */
-    private fun canLoadPrevWeek(date: LocalDate): Boolean {
+    private fun canLoadPrevWeek(date: ZonedDateTime): Boolean {
         val prevWeekStart = date.minusWeeks(1)
         val prevWeekEnd = prevWeekStart.plusDays(6)
-        return prevWeekEnd > LocalDate.now()
+        return prevWeekEnd > ZonedDateTime.now()
     }
 }
