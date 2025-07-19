@@ -1,5 +1,6 @@
 package com.example.teacherschedule.presentation.schedule
 
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -79,13 +80,16 @@ fun ScheduleScreen(
                                 viewModel.updateSlotsByDate(date)
                             }
                         )
-                        TimeSlotList(
-                            slots = successState.timeSlotList,
-                            selectedSlot = successState.selectedTime,
-                            onSelect = { timeSlot ->
-                                viewModel.selectTimeSlot(timeSlot)
-                            }
-                        )
+                        AnimatedContent(
+                            targetState = successState.timeSlotList,
+                            label = "TimeSlotListTransition"
+                        ) { slotList ->
+                            TimeSlotList(
+                                slots = slotList,
+                                selectedSlot = successState.selectedTime,
+                                onSelect = { viewModel.selectTimeSlot(it) }
+                            )
+                        }
                     }
                 }
             }
