@@ -66,6 +66,18 @@ class ScheduleViewModel @Inject constructor(
         )
     }
 
+    fun retry() {
+        (uiState.value as? ScheduleUiState.Success)?.let { uiState ->
+            loadSchedule(
+                uiState.currentRangeStartDate,
+                uiState.selectedDate
+            )
+        } ?: run {
+            val defaultDate = LocalDate.now()
+            loadSchedule(defaultDate, defaultDate)
+        }
+    }
+
     private fun loadSchedule(rangeStartDate: LocalDate, selectedDate: LocalDate) {
         val previous = _uiState.value as? ScheduleUiState.Success
         _uiState.value = ScheduleUiState.Loading(lastState = previous)

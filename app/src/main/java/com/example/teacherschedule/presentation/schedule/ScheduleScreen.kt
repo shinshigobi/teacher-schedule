@@ -23,6 +23,10 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.painterResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.teacherschedule.R
+import com.example.teacherschedule.domain.exception.AppException
+import com.example.teacherschedule.presentation.common.component.ApiErrorContent
+import com.example.teacherschedule.presentation.common.component.NetworkErrorContent
+import com.example.teacherschedule.presentation.common.component.UnknownErrorContent
 import com.example.teacherschedule.presentation.schedule.component.DayOfWeekTab
 import com.example.teacherschedule.presentation.schedule.component.TeacherInfoCard
 import com.example.teacherschedule.presentation.schedule.component.TimeSlotList
@@ -61,7 +65,9 @@ fun ScheduleScreen(
         Box(modifier = Modifier.padding(innerPadding)) {
             when (uiState) {
                 is ScheduleUiState.Error -> {
-                    // TODO
+                    ScheduleErrorContent(uiState) {
+                        viewModel.retry()
+                    }
                 }
 
                 is ScheduleUiState.Success, is ScheduleUiState.Loading -> {
@@ -123,6 +129,25 @@ fun ScheduleScreen(
                     }
                 }
             }
+        }
+    }
+}
+
+@Composable
+fun ScheduleErrorContent(uiState: ScheduleUiState, action: () -> Unit) {
+    val error = (uiState as ScheduleUiState.Error).error
+    when (error) {
+        is AppException.ApiError,
+        is AppException.HttpError -> {
+            ApiErrorContent(action)
+        }
+
+        is AppException.NetworkError -> {
+            NetworkErrorContent(action)
+        }
+
+        is AppException.UnknownError -> {
+            UnknownErrorContent(action)
         }
     }
 }
