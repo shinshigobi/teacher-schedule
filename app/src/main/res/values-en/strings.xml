@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">TeacherSchedule</string>
+    <string name="retry">Retry</string>
+    <string name="server_error_title">Server Error</string>
+    <string name="server_error_msg">The server is currently experiencing issues. Please try again later.</string>
+    <string name="network_error_title">Network Connection Failed</string>
+    <string name="network_error_msg">Please check your internet connection or try again later.</string>
+    <string name="unknown_error_title">Unknown Error Occurred</string>
+    <string name="unknown_error_msg">An unexpected error has occurred. Please try again later.</string>
+    <string name="booking_time">Booking Time Slot</string>
+</resources>
