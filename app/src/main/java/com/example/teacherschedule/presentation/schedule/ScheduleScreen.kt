@@ -17,7 +17,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.teacherschedule.R
 import com.example.teacherschedule.presentation.schedule.component.DayOfWeekTab
@@ -80,8 +79,8 @@ fun ScheduleScreen(
                         DayOfWeekTab(
                             dateList = successState.dateList,
                             selectedDate = successState.selectedDate,
-                            onDateSelected = {
-                                // TODO
+                            onDateSelected = { date ->
+                                viewModel.updateSlotsByDate(date)
                             }
                         )
                         TimeSlotList(

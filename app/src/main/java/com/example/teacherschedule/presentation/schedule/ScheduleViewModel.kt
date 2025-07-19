@@ -30,6 +30,18 @@ class ScheduleViewModel @Inject constructor(
         loadSchedule(defaultDate, defaultDate)
     }
 
+    fun updateSlotsByDate(date: LocalDate) {
+        val currentState = _uiState.value as? ScheduleUiState.Success ?: return
+        val newTimeSlots = allTimeSlotMap[date].orEmpty()
+
+        _uiState.value = currentState.copy(
+            selectedDate = date,
+            timeSlotList = newTimeSlots,
+            selectedTime = null, // 點選日期後清除已選的時間
+            isBookingConfirmed = false
+        )
+    }
+
     private fun loadSchedule(rangeStartDate: LocalDate, selectedDate: LocalDate) {
         _uiState.value = ScheduleUiState.Loading
 
@@ -48,6 +60,7 @@ class ScheduleViewModel @Inject constructor(
                 _uiState.value = ScheduleUiState.Success(
                     currentRangeStartDate = rangeStartDate,
                     timeSlotList = allTimeSlotMap[targetDate].orEmpty(),
+                    dateList = allTimeSlotMap.keys.sorted(),
                     selectedDate = targetDate,
                     selectedTime = null,
                     isBookingConfirmed = false

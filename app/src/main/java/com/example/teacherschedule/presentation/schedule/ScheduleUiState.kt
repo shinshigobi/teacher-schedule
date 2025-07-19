@@ -21,6 +21,8 @@ sealed class ScheduleUiState {
      * @property timeSlotList 對應 `selectedDate` 的時間區段列表，
      * 每半小時為一格，會標記為「可預約」或「已被預約」。
      *
+     * @property dateList 此週內所有時段所對應的日期。
+     *
      * @property selectedDate 使用者目前選擇查看的特定日期。
      * 預設為資料範圍內的今天（或資料內最早的一天）。
      *
@@ -32,6 +34,7 @@ sealed class ScheduleUiState {
     data class Success(
         val currentRangeStartDate: LocalDate,
         val timeSlotList: List<TimeSlot>,
+        val dateList: List<LocalDate>,
         val selectedDate: LocalDate,
         val selectedTime: TimeSlot? = null,
         val isBookingConfirmed: Boolean = false
@@ -47,11 +50,6 @@ sealed class ScheduleUiState {
          * 若區間起始日早於今天則不可再往前。
          */
         val isPrevEnabled = currentRangeStartDate > LocalDate.now()
-
-        /**
-         * 此週內所有時段所對應的日期。
-         */
-        val dateList = timeSlotList.map { it.startUtc.toLocalDate() }
 
         private fun LocalDate.formatToWeekRangeText(): String {
             val end = this.plusDays(6)
