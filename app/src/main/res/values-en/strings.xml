@@ -9,4 +9,8 @@
     <string name="unknown_error_title">Unknown Error Occurred</string>
     <string name="unknown_error_msg">An unexpected error has occurred. Please try again later.</string>
     <string name="booking_time">Booking Time Slot</string>
+    <string name="back">Back</string>
+    <string name="someones_avatar">%1$s\'s avatar</string>
+    <string name="previous_week">Previous Week</string>
+    <string name="next_week">Next Week</string>
 </resources>

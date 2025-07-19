@@ -8,4 +8,8 @@
     <string name="unknown_error_title">發生未知錯誤</string>
     <string name="unknown_error_msg">目前發生了非預期錯誤，請稍後再試。</string>
     <string name="booking_time">預約時段</string>
+    <string name="back">返回</string>
+    <string name="someones_avatar">%1$s的頭貼</string>
+    <string name="previous_week">上一週</string>
+    <string name="next_week">下一週</string>
 </resources>
