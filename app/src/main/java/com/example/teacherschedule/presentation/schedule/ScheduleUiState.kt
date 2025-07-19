@@ -28,6 +28,8 @@ sealed class ScheduleUiState {
      * @property selectedTime 使用者目前點選的時間區段。
      * 若為 null，表示尚未選擇時段。
      *
+     * @property isPrevEnabled 是否可以前往前一週。
+     *
      * @property isBookingConfirmed 是否進行預約，用來顯示 Dialog。
      */
     data class Success(
