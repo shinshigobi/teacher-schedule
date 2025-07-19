@@ -4,7 +4,6 @@ import com.example.teacherschedule.domain.exception.AppException
 import com.example.teacherschedule.domain.model.schedule.TimeSlot
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-import java.util.Locale
 
 sealed class ScheduleUiState {
 
@@ -42,14 +41,16 @@ sealed class ScheduleUiState {
     ) : ScheduleUiState() {
 
         /**
-         * 顯示於 UI 上的週區間文字，例如："Jul 28 - Aug 3"。
+         * 顯示於 UI 上的週區間文字，格式為："yyyy/MM/dd - yyyy/MM/dd"。
          */
-        val rangeText = currentRangeStartDate.formatToWeekRangeText()
+        val rangeText = formatDateRange(dateList)
 
-        private fun LocalDate.formatToWeekRangeText(): String {
-            val end = this.plusDays(6)
-            val formatter = DateTimeFormatter.ofPattern("MMM d", Locale.getDefault())
-            return "${formatter.format(this)} - ${formatter.format(end)}"
+        private fun formatDateRange(dateList: List<LocalDate>): String {
+            if (dateList.isEmpty()) return ""
+            val start = dateList.min()
+            val end = dateList.max()
+            val formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd")
+            return "${formatter.format(start)} - ${formatter.format(end)}"
         }
     }
 
