@@ -56,6 +56,14 @@ class ScheduleViewModel @Inject constructor(
         loadSchedule(nextWeekStart, nextWeekStart)
     }
 
+    fun selectTimeSlot(timeSlot: TimeSlot) {
+        val currentState = _uiState.value as? ScheduleUiState.Success ?: return
+
+        _uiState.value = currentState.copy(
+            selectedTime = timeSlot
+        )
+    }
+
     private fun loadSchedule(rangeStartDate: LocalDate, selectedDate: LocalDate) {
         _uiState.value = ScheduleUiState.Loading
 

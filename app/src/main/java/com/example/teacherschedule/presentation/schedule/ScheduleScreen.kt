@@ -81,9 +81,9 @@ fun ScheduleScreen(
                         )
                         TimeSlotList(
                             slots = successState.timeSlotList,
-                            selectedSlot = null, // TODO
-                            onSelect = {
-                                // TODO
+                            selectedSlot = successState.selectedTime,
+                            onSelect = { timeSlot ->
+                                viewModel.selectTimeSlot(timeSlot)
                             }
                         )
                     }
