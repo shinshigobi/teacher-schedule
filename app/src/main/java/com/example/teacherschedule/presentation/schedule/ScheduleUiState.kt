@@ -37,6 +37,7 @@ sealed class ScheduleUiState {
         val dateList: List<LocalDate>,
         val selectedDate: LocalDate,
         val selectedTime: TimeSlot? = null,
+        val isPrevEnabled: Boolean,
         val isBookingConfirmed: Boolean = false
     ) : ScheduleUiState() {
 
@@ -44,12 +45,6 @@ sealed class ScheduleUiState {
          * 顯示於 UI 上的週區間文字，例如："Jul 28 - Aug 3"。
          */
         val rangeText = currentRangeStartDate.formatToWeekRangeText()
-
-        /**
-         * 是否啟用「前一週」按鈕。
-         * 若區間起始日早於今天則不可再往前。
-         */
-        val isPrevEnabled = currentRangeStartDate > LocalDate.now()
 
         private fun LocalDate.formatToWeekRangeText(): String {
             val end = this.plusDays(6)

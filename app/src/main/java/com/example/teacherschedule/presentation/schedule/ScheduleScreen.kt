@@ -69,12 +69,8 @@ fun ScheduleScreen(
                         WeekSelectorBar(
                             rangeText = successState.rangeText,
                             isPrevEnabled = successState.isPrevEnabled,
-                            onPrev = {
-                                // TODO
-                            },
-                            onNext = {
-                                // TODO
-                            }
+                            onPrev = { viewModel.loadPreviousWeek() },
+                            onNext = { viewModel.loadNextWeek() }
                         )
                         DayOfWeekTab(
                             dateList = successState.dateList,

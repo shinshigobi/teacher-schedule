@@ -42,6 +42,20 @@ class ScheduleViewModel @Inject constructor(
         )
     }
 
+    fun loadPreviousWeek() {
+        val currentState = _uiState.value as? ScheduleUiState.Success ?: return
+        if (!canLoadPrevWeek(currentState.currentRangeStartDate)) return
+
+        val prevWeekStart = currentState.currentRangeStartDate.minusWeeks(1)
+        loadSchedule(prevWeekStart, prevWeekStart)
+    }
+
+    fun loadNextWeek() {
+        val currentState = _uiState.value as? ScheduleUiState.Success ?: return
+        val nextWeekStart = currentState.currentRangeStartDate.plusWeeks(1)
+        loadSchedule(nextWeekStart, nextWeekStart)
+    }
+
     private fun loadSchedule(rangeStartDate: LocalDate, selectedDate: LocalDate) {
         _uiState.value = ScheduleUiState.Loading
 
@@ -63,6 +77,7 @@ class ScheduleViewModel @Inject constructor(
                     dateList = allTimeSlotMap.keys.sorted(),
                     selectedDate = targetDate,
                     selectedTime = null,
+                    isPrevEnabled = canLoadPrevWeek(rangeStartDate),
                     isBookingConfirmed = false
                 )
             }.onFailure { throwable ->
@@ -70,5 +85,17 @@ class ScheduleViewModel @Inject constructor(
                 _uiState.value = ScheduleUiState.Error(error)
             }
         }
+    }
+
+    /**
+     * 判斷整週的範圍是否完全過去，若完全過去則不可再往前。
+     *
+     * @param date 整週的開始日期。
+     * @return 是否可往前載入。
+     */
+    private fun canLoadPrevWeek(date: LocalDate): Boolean {
+        val prevWeekStart = date.minusWeeks(1)
+        val prevWeekEnd = prevWeekStart.plusDays(6)
+        return prevWeekEnd > LocalDate.now()
     }
 }
