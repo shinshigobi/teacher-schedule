@@ -3,6 +3,8 @@ package com.example.teacherschedule.presentation.schedule
 import com.example.teacherschedule.domain.exception.AppException
 import com.example.teacherschedule.domain.model.schedule.TimeSlot
 import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 sealed class ScheduleUiState {
 
@@ -33,7 +35,25 @@ sealed class ScheduleUiState {
         val selectedDate: LocalDate,
         val selectedTime: TimeSlot? = null,
         val isBookingConfirmed: Boolean = false
-    ) : ScheduleUiState()
+    ) : ScheduleUiState() {
+
+        /**
+         * 顯示於 UI 上的週區間文字，例如："Jul 28 - Aug 3"。
+         */
+        val rangeText = currentRangeStartDate.formatToWeekRangeText()
+
+        /**
+         * 是否啟用「前一週」按鈕。
+         * 若區間起始日早於今天則不可再往前。
+         */
+        val isPrevEnabled = currentRangeStartDate > LocalDate.now()
+
+        private fun LocalDate.formatToWeekRangeText(): String {
+            val end = this.plusDays(6)
+            val formatter = DateTimeFormatter.ofPattern("MMM d", Locale.getDefault())
+            return "${formatter.format(this)} - ${formatter.format(end)}"
+        }
+    }
 
     data class Error(val error: AppException) : ScheduleUiState()
 }
